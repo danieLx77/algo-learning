@@ -30,7 +30,8 @@ export const ExerciseModule: FC = () => {
     try {
       const payload = {
         array: [-1, 0, 3, 5, 9, 12],
-        target: 9
+        target: 9,
+        code
       };
 
       const response = await axios.post<ExerciseResult>(
