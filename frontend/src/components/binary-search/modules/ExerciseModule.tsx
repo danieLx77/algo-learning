@@ -2,7 +2,8 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
-import { Play } from 'lucide-react';
+import { Braces, CheckCircle2, Clock3, Code2, LoaderCircle, Play, Terminal, XCircle } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 interface ExerciseResult {
   passed: boolean;
@@ -10,8 +11,9 @@ interface ExerciseResult {
   message: string;
 }
 
-export const ExerciseModule: FC = () => {
-  const defaultCode = `class Solution {
+type ExecutionStatus = 'idle' | 'running' | 'passed' | 'failed' | 'error';
+
+const DEFAULT_CODE = `class Solution {
     public int search(int[] nums, int target) {
         // Implemente sua busca binária aqui
 
@@ -19,12 +21,25 @@ export const ExerciseModule: FC = () => {
     }
 }`;
 
-  const [code, setCode] = useState<string>(defaultCode);
+const STATUS_DISPLAY: Record<ExecutionStatus, { label: string; className: string; icon?: LucideIcon }> = {
+  idle: { label: 'Aguardando', className: 'text-slate-600' },
+  running: { label: 'Processando', className: 'text-amber-300', icon: LoaderCircle },
+  passed: { label: 'Aprovado', className: 'text-emerald-300', icon: CheckCircle2 },
+  failed: { label: 'Reprovado', className: 'text-rose-300', icon: XCircle },
+  error: { label: 'Erro', className: 'text-rose-300', icon: XCircle },
+};
+
+export const ExerciseModule: FC = () => {
+  const [code, setCode] = useState<string>(DEFAULT_CODE);
   const [output, setOutput] = useState<string>('> Pronto para executar...');
   const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<ExecutionStatus>('idle');
+  const statusDisplay = STATUS_DISPLAY[status];
+  const StatusIcon = statusDisplay.icon;
 
   const handleRunTests = async () => {
     setLoading(true);
+    setStatus('running');
     setOutput('> Executando testes na nuvem...');
 
     try {
@@ -41,66 +56,103 @@ export const ExerciseModule: FC = () => {
 
       const result = response.data;
       if (result.passed) {
+        setStatus('passed');
         setOutput(`> ${result.message}\n> Tempo de execução: ${result.executionTimeMs}ms\n> Status: APROVADO`);
       } else {
+        setStatus('failed');
         setOutput(`> ${result.message}\n> Tempo de execução: ${result.executionTimeMs}ms\n> Status: REPROVADO`);
       }
-    } catch (err) {
-      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
-      setOutput(`> Erro de conexão com o servidor: ${errorMsg}`);
+    } catch {
+      setStatus('error');
+      setOutput('> Não foi possível executar os testes. Verifique a conexão e tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex flex-col">
-        <h2 className="text-xl font-bold text-white mb-4">Exercício: Busca Binária Clássica</h2>
-        <div className="prose prose-invert prose-slate prose-sm flex-grow">
-          <p>
-            Dado um array de inteiros <code>nums</code> ordenado em ordem crescente,
-            e um inteiro <code>target</code>, escreva uma função para pesquisar <code>target</code> em <code>nums</code>.
+    <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
+      <section className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65 shadow-xl shadow-black/10">
+        <div className="border-b border-white/[0.06] p-6 sm:p-7">
+          <div className="flex items-center justify-between gap-4">
+            <span className="flex size-11 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-400/[0.08] text-violet-300">
+              <Braces size={20} />
+            </span>
+            <span className="rounded-full border border-emerald-400/15 bg-emerald-400/[0.06] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-300">
+              Nível inicial
+            </span>
+          </div>
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-violet-300/80">Desafio 01</p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Busca binária clássica</h2>
+          <p className="mt-4 text-sm leading-7 text-slate-400">
+            Dado um array <code className="rounded bg-white/[0.05] px-1.5 py-1 font-mono text-xs text-blue-300">nums</code> ordenado e um valor{' '}
+            <code className="rounded bg-white/[0.05] px-1.5 py-1 font-mono text-xs text-blue-300">target</code>, retorne o índice do alvo. Se ele não existir, retorne <code className="font-mono text-slate-300">-1</code>.
           </p>
-          <p>
-            Se o alvo existir, retorne seu índice. Caso contrário, retorne <code>-1</code>.
-          </p>
-          <p>
-            <strong>Restrição:</strong> Você deve escrever um algoritmo com complexidade de tempo de <code>O(log n)</code>.
-          </p>
-
-          <h3>Exemplo 1:</h3>
-          <pre className="bg-slate-800 border border-slate-700 p-3 rounded-lg text-sm">
-            Input: nums = [-1,0,3,5,9,12], target = 9{'\n'}
-            Output: 4
-          </pre>
         </div>
-      </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between bg-slate-800/80 px-4 py-2 border-b border-slate-800">
-            <span className="text-sm font-medium text-slate-400">Solution.java</span>
+        <div className="space-y-5 p-6 sm:p-7">
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] p-4">
+              <Clock3 size={16} className="text-amber-300" />
+              <p className="mt-3 text-[10px] uppercase tracking-[0.14em] text-slate-600">Complexidade</p>
+              <p className="mt-1 font-mono text-sm font-semibold text-white">O(log n)</p>
+            </div>
+            <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] p-4">
+              <Code2 size={16} className="text-blue-300" />
+              <p className="mt-3 text-[10px] uppercase tracking-[0.14em] text-slate-600">Linguagem</p>
+              <p className="mt-1 font-mono text-sm font-semibold text-white">Java</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">Exemplo</p>
+            <div className="mt-3 overflow-x-auto rounded-xl border border-white/[0.06] bg-[#090f1c] p-4 font-mono text-xs leading-6">
+              <p><span className="text-slate-600">nums</span> <span className="text-slate-500">=</span> <span className="text-blue-300">[-1, 0, 3, 5, 9, 12]</span></p>
+              <p><span className="text-slate-600">target</span> <span className="text-slate-500">=</span> <span className="text-amber-300">9</span></p>
+              <p className="mt-2 border-t border-white/[0.05] pt-2"><span className="text-slate-600">output</span> <span className="text-slate-500">=</span> <span className="text-emerald-300">4</span></p>
+            </div>
+          </div>
+
+          <p className="flex items-start gap-2.5 rounded-xl border border-blue-400/10 bg-blue-400/[0.045] p-4 text-xs leading-5 text-blue-200/70">
+            <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-blue-300" />
+            Mantenha a assinatura do método para que os testes encontrem sua solução.
+          </p>
+        </div>
+      </section>
+
+      <section className="flex min-w-0 flex-col gap-4">
+        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#090f1c] shadow-xl shadow-black/10">
+          <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] bg-white/[0.025] px-4 py-3 sm:px-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="flex gap-1.5">
+                <span className="size-2 rounded-full bg-rose-400/60" />
+                <span className="size-2 rounded-full bg-amber-400/60" />
+                <span className="size-2 rounded-full bg-emerald-400/60" />
+              </div>
+              <span className="truncate font-mono text-[11px] text-slate-500">Solution.java</span>
+            </div>
             <button
-              onClick={handleRunTests}
+              type="button"
+              onClick={() => { void handleRunTests(); }}
               disabled={loading}
-              className="flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded-lg text-xs font-medium transition-colors disabled:opacity-50"
+              className="flex shrink-0 items-center gap-2 rounded-lg bg-emerald-500 px-3.5 py-2 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
             >
-              <Play size={12} />
-              {loading ? 'Executando...' : 'Executar Testes'}
+              <Play size={12} fill="currentColor" />
+              {loading ? 'Executando...' : 'Executar testes'}
             </button>
           </div>
-          <div className="h-[40vh]">
+          <div className="h-[420px] min-h-[320px] max-h-[55vh]">
             <Editor
               height="100%"
               defaultLanguage="java"
               theme="vs-dark"
               value={code}
-              onChange={(val) => setCode(val || '')}
+              onChange={(value) => setCode(value ?? '')}
               options={{
                 minimap: { enabled: false },
                 fontSize: 14,
-                padding: { top: 16 },
+                fontFamily: "'JetBrains Mono', 'SFMono-Regular', Consolas, monospace",
+                padding: { top: 20 },
                 scrollBeyondLastLine: false,
                 lineNumbers: 'on',
                 renderLineHighlight: 'line',
@@ -112,15 +164,21 @@ export const ExerciseModule: FC = () => {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-          <div className="px-4 py-2 border-b border-slate-800">
-            <span className="text-sm font-medium text-slate-400">Output</span>
+        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65">
+          <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 sm:px-5">
+            <span className="flex items-center gap-2 text-xs font-medium text-slate-400">
+              <Terminal size={14} /> Console
+            </span>
+            <span className={`flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] ${statusDisplay.className}`}>
+              {StatusIcon && <StatusIcon size={12} className={status === 'running' ? 'animate-spin' : undefined} />}
+              {statusDisplay.label}
+            </span>
           </div>
-          <div className="font-mono text-sm text-slate-400 p-4 max-h-[160px] overflow-y-auto whitespace-pre-wrap">
+          <div className="max-h-[160px] min-h-24 overflow-y-auto whitespace-pre-wrap p-4 font-mono text-xs leading-6 text-slate-400 sm:px-5" aria-live="polite">
             {output}
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
