@@ -12,8 +12,8 @@ Imagine procurar uma palavra num dicionário. Você não lê página por página
 
 ## Complexidade de Tempo (Big O)
 - **Melhor caso:** $O(1)$ (O elemento é o do meio logo na primeira tentativa)
-- **Pior caso:** $O(\log n)$ (O elemento não está na lista ou precisa de todas as divisões)
-- **Caso médio:** $O(\log n)$
+- **Pior caso:** $O(log n)$ (O elemento não está na lista ou precisa de todas as divisões)
+- **Caso médio:** $O(log n)$
 
 ## Requisitos
 O array **deve** estar previamente ordenado.

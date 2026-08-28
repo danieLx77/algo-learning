@@ -28,21 +28,17 @@ export const VisualizerModule: React.FC = () => {
     setCurrentStep(0);
     try {
       const response = await axios.get<BinarySearchStep[]>(
-        \`http://localhost:8080/api/v1/algorithms/binary-search/trace?target=\${target}\`
+        `http://localhost:8080/api/v1/algorithms/binary-search/trace?target=${target}`
       );
       setSteps(response.data);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao conectar com o backend');
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      setError(errorMsg || 'Erro ao conectar com o backend');
       setSteps([]);
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchTrace();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -55,7 +51,7 @@ export const VisualizerModule: React.FC = () => {
           }
           return prev + 1;
         });
-      }, 1500); // 1.5s per step
+      }, 1500);
     }
     return () => clearInterval(interval);
   }, [isPlaying, steps.length]);
@@ -84,7 +80,7 @@ export const VisualizerModule: React.FC = () => {
             className="bg-slate-900 border border-slate-700 rounded px-3 py-1 w-24 text-slate-200 focus:outline-none focus:border-blue-500 transition-colors"
           />
           <button 
-            onClick={fetchTrace}
+            onClick={() => { void fetchTrace(); }}
             disabled={loading}
             className="p-1.5 bg-blue-600 hover:bg-blue-500 rounded text-white disabled:opacity-50 transition-colors"
           >
@@ -122,7 +118,7 @@ export const VisualizerModule: React.FC = () => {
           return (
             <div key={idx} className="flex flex-col items-center">
               <div 
-                className={\`w-12 h-12 flex items-center justify-center rounded-md text-lg font-bold transition-all duration-300 \${bgColor} \${textColor}\`}
+                className={`w-12 h-12 flex items-center justify-center rounded-md text-lg font-bold transition-all duration-300 ${bgColor} ${textColor}`}
               >
                 {val}
               </div>

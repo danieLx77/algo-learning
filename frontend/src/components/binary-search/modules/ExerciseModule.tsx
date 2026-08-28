@@ -9,13 +9,13 @@ interface ExerciseResult {
 }
 
 export const ExerciseModule: React.FC = () => {
-  const defaultCode = \`class Solution {
+  const defaultCode = `class Solution {
     public int search(int[] nums, int target) {
         // Implemente sua busca binária aqui
         
         return -1;
     }
-}\`;
+}`;
 
   const [code, setCode] = useState<string>(defaultCode);
   const [output, setOutput] = useState<string>('> Pronto para executar...');
@@ -39,12 +39,13 @@ export const ExerciseModule: React.FC = () => {
       
       const result = response.data;
       if (result.passed) {
-        setOutput(\`> \${result.message}\\n> Tempo de execução: \${result.executionTimeMs}ms\\n> Status: APROVADO\`);
+        setOutput(`> ${result.message}\n> Tempo de execução: ${result.executionTimeMs}ms\n> Status: APROVADO`);
       } else {
-        setOutput(\`> \${result.message}\\n> Tempo de execução: \${result.executionTimeMs}ms\\n> Status: REPROVADO\`);
+        setOutput(`> ${result.message}\n> Tempo de execução: ${result.executionTimeMs}ms\n> Status: REPROVADO`);
       }
-    } catch (err: any) {
-      setOutput(\`> Erro de conexão com o servidor: \${err.message}\`);
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Unknown error';
+      setOutput(`> Erro de conexão com o servidor: ${errorMsg}`);
     } finally {
       setLoading(false);
     }
