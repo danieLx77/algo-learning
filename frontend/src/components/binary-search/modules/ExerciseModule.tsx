@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import Editor from '@monaco-editor/react';
 import axios from 'axios';
 
@@ -8,7 +9,7 @@ interface ExerciseResult {
   message: string;
 }
 
-export const ExerciseModule: React.FC = () => {
+export const ExerciseModule: FC = () => {
   const defaultCode = `class Solution {
     public int search(int[] nums, int target) {
         // Implemente sua busca binária aqui

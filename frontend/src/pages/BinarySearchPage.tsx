@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import { Tabs } from '../components/binary-search/Tabs';
 import { TheoryModule } from '../components/binary-search/modules/TheoryModule';
 import { VisualizerModule } from '../components/binary-search/modules/VisualizerModule';
 import { ExerciseModule } from '../components/binary-search/modules/ExerciseModule';
 
-export const BinarySearchPage: React.FC = () => {
+export const BinarySearchPage: FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = ['Teoria', 'Visualizador', 'Exercícios'];
 

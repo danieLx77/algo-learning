@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import type { FC } from 'react';
 import axios from 'axios';
 import { Play, Pause, SkipBack, SkipForward, Search } from 'lucide-react';
 
@@ -13,7 +14,7 @@ interface BinarySearchStep {
   description: string;
 }
 
-export const VisualizerModule: React.FC = () => {
+export const VisualizerModule: FC = () => {
   const [target, setTarget] = useState<number>(23);
   const [steps, setSteps] = useState<BinarySearchStep[]>([]);
   const [currentStep, setCurrentStep] = useState<number>(0);

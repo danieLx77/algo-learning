@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 
 interface TabsProps {
   activeTab: number;
@@ -6,7 +6,7 @@ interface TabsProps {
   tabs: string[];
 }
 
-export const Tabs: React.FC<TabsProps> = ({ activeTab, setActiveTab, tabs }) => {
+export const Tabs: FC<TabsProps> = ({ activeTab, setActiveTab, tabs }) => {
   return (
     <div className="flex border-b border-slate-700 mb-6">
       {tabs.map((tab, index) => (

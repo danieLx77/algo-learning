@@ -1,4 +1,4 @@
-import React from 'react';
+import type { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -19,7 +19,7 @@ Imagine procurar uma palavra num dicionário. Você não lê página por página
 O array **deve** estar previamente ordenado.
 `;
 
-export const TheoryModule: React.FC = () => {
+export const TheoryModule: FC = () => {
   return (
     <div className="prose prose-invert prose-blue max-w-none bg-slate-800 p-8 rounded-lg shadow-lg">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
