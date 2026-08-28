@@ -45,7 +45,9 @@ Você tem acesso às skills em `.agents/skills/`. Ative-as **automaticamente** d
 ## Estado Atual & Memória
 - **O que foi feito:** Frontend React integrado à API REST do backend via `axios`. Módulo Visualizador consome `GET /trace` com animação passo-a-passo. Módulo de Exercícios conecta `POST /verify` com Monaco Editor.
 - **Correção CI/CD (28/08/2026):** Adicionado `working-directory: ./backend` no workflow. Configurado Vitest + React Testing Library no frontend. Imports `React` corrigidos para `verbatimModuleSyntax`.
-- **Melhoria de UI (28/08/2026):** Adicionado controle de velocidade (Lento/Médio/Rápido) no VisualizerModule com ícone `Gauge` e step indicator. ExerciseModule reorganizado: botão "Executar Testes" no header do editor, editor com `max-h-[40vh]`, output compacto com `max-h-[160px]`. Estilo visual clean minimalista: fundo `slate-950`, bordas `slate-800`, tabs com fundo semi-transparente, TheoryModule com borda sutil.
+- **Homepage moderna (28/08/2026):** Criado hero responsivo com preview do algoritmo, CTAs, métricas, header fixo e jornada em três etapas. TheoryModule, VisualizerModule e ExerciseModule receberam cards e hierarquia visual consistentes.
+- **Acessibilidade e UX (28/08/2026):** Abas usam semântica ARIA e navegação por setas/Home/End. Visualizador valida o intervalo de `Integer`, usa parâmetros estruturados e exibe erros seguros. Layout validado em desktop e mobile sem overflow.
 - **Validação de código (28/08/2026):** Endpoint `/verify` agora compila e executa o código Java do usuário via `javax.tools.JavaCompiler`. DTO `ExerciseSubmissionRequest` recebe campo `code`. Frontend envia o código do Monaco Editor. Testes cobrem: código correto, incorreto, erro de compilação, target não encontrado. Arquivos compilados em diretório temporário com `URLClassLoader`.
-- **Próximos Passos:** Adicionar mais algoritmos à plataforma, ou configurar autenticação.
-- **Decisões de Arquitetura:** Backend compila código Java do usuário em sandbox temporário (`javax.tools.JavaCompiler` + `URLClassLoader`). Frontend envia código como string. Testes usam `setAccessible(true)` para classes package-private.
+- **Testes atuais:** Frontend com 3 testes Vitest/RTL; lint e build verdes. Backend com 11 testes JUnit verdes.
+- **Próximos Passos:** Adicionar novos algoritmos, configurar autenticação e reforçar o isolamento da execução de código.
+- **Decisões de Arquitetura:** Interface dark responsiva com Tailwind CSS 4 e Lucide; nenhuma dependência nova. Backend mantém compilação temporária via `JavaCompiler` + `URLClassLoader`.
