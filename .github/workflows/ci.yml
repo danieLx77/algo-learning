@@ -1,0 +1,60 @@
+name: Continuous Integration (Spring Boot & React)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven' 
+
+      - name: Executar Linter e Verificação Estática (SpotBugs/Checkstyle)
+        run: ./mvnw clean compile
+
+      - name: Executar Testes Unitários e de Integração
+        run: ./mvnw test
+
+  frontend-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: './frontend/package-lock.json' 
+
+      - name: Instalar Dependências
+        run: npm ci
+        working-directory: ./frontend 
+
+      - name: Executar Linter e Checagem de Tipos (TypeScript)
+        run: |
+          npm run lint
+          npx tsc --noEmit
+        working-directory: ./frontend
+
+      - name: Executar Testes do Frontend (Vitest / Jest)
+        run: npm test -- --watchAll=false
+        working-directory: ./frontend
+
+      - name: Validar Build de Produção
+        run: npm run build
+        working-directory: ./frontend
