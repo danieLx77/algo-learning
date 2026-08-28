@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
 import Editor from '@monaco-editor/react';
+import axios from 'axios';
+
+interface ExerciseResult {
+  passed: boolean;
+  executionTimeMs: number;
+  message: string;
+}
 
 export const ExerciseModule: React.FC = () => {
   const defaultCode = \`class Solution {
@@ -11,6 +18,37 @@ export const ExerciseModule: React.FC = () => {
 }\`;
 
   const [code, setCode] = useState<string>(defaultCode);
+  const [output, setOutput] = useState<string>('> Pronto para executar...');
+  const [loading, setLoading] = useState(false);
+
+  const handleRunTests = async () => {
+    setLoading(true);
+    setOutput('> Executando testes na nuvem...');
+    
+    try {
+      // Usando os dados de exemplo do problema para verificação
+      const payload = {
+        array: [-1, 0, 3, 5, 9, 12],
+        target: 9
+      };
+      
+      const response = await axios.post<ExerciseResult>(
+        'http://localhost:8080/api/v1/algorithms/binary-search/verify',
+        payload
+      );
+      
+      const result = response.data;
+      if (result.passed) {
+        setOutput(\`> \${result.message}\\n> Tempo de execução: \${result.executionTimeMs}ms\\n> Status: APROVADO\`);
+      } else {
+        setOutput(\`> \${result.message}\\n> Tempo de execução: \${result.executionTimeMs}ms\\n> Status: REPROVADO\`);
+      }
+    } catch (err: any) {
+      setOutput(\`> Erro de conexão com o servidor: \${err.message}\`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[70vh]">
@@ -57,15 +95,19 @@ export const ExerciseModule: React.FC = () => {
           />
         </div>
 
-        <div className="bg-slate-800 rounded-lg p-4 shadow-lg border border-slate-700 min-h-[120px]">
+        <div className="bg-slate-800 rounded-lg p-4 shadow-lg border border-slate-700 min-h-[140px] flex flex-col">
           <div className="flex justify-between items-center mb-2">
             <h3 className="font-semibold text-slate-300">Output console</h3>
-            <button className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
-              Submeter
+            <button 
+              onClick={handleRunTests}
+              disabled={loading}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Executando...' : 'Executar Testes'}
             </button>
           </div>
-          <div className="font-mono text-sm text-slate-400 p-2 bg-slate-900 rounded">
-            > Pronto para executar...
+          <div className="font-mono text-sm text-slate-400 p-3 bg-slate-900 rounded flex-grow whitespace-pre-wrap">
+            {output}
           </div>
         </div>
       </div>
