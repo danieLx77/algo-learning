@@ -10,20 +10,19 @@ export const BinarySearchPage: FC = () => {
   const tabs = ['Teoria', 'Visualizador', 'Exercícios'];
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-200">
-      <header className="bg-slate-800 border-b border-slate-700 py-6 px-8 shadow-sm">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-white tracking-tight">AlgoLearning</h1>
+    <div className="min-h-screen bg-slate-950 text-slate-200">
+      <header className="bg-slate-900 border-b border-slate-800 py-5 px-8">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <h1 className="text-lg font-semibold text-white tracking-tight">AlgoLearning</h1>
           <div className="flex gap-4">
-            {/* Espaço para futuros menus, login, etc */}
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Busca Binária</h1>
-          <p className="text-slate-400">Aprenda, visualize e pratique o algoritmo de Busca Binária.</p>
+      <main className="max-w-6xl mx-auto px-8 py-10">
+        <div className="mb-10">
+          <h1 className="text-4xl font-bold text-white mb-3">Busca Binária</h1>
+          <p className="text-slate-400 text-lg">Aprenda, visualize e pratique o algoritmo de Busca Binária.</p>
         </div>
 
         <Tabs activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs} />

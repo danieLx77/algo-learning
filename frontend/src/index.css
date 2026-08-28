@@ -8,5 +8,7 @@
 
 body {
   background-color: var(--color-dark-bg);
-  color: white;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

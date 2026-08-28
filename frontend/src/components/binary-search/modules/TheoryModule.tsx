@@ -21,7 +21,7 @@ O array **deve** estar previamente ordenado.
 
 export const TheoryModule: FC = () => {
   return (
-    <div className="prose prose-invert prose-blue max-w-none bg-slate-800 p-8 rounded-lg shadow-lg">
+    <div className="prose prose-invert prose-slate max-w-none bg-slate-900 border border-slate-800 p-8 rounded-xl">
       <ReactMarkdown remarkPlugins={[remarkGfm]}>
         {markdownContent}
       </ReactMarkdown>

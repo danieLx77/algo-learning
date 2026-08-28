@@ -8,14 +8,14 @@ interface TabsProps {
 
 export const Tabs: FC<TabsProps> = ({ activeTab, setActiveTab, tabs }) => {
   return (
-    <div className="flex border-b border-slate-700 mb-6">
+    <div className="flex gap-1 border-b border-slate-800 mb-8">
       {tabs.map((tab, index) => (
         <button
           key={index}
-          className={`py-2 px-6 font-medium text-sm transition-colors duration-200 border-b-2 ${
+          className={`py-2.5 px-5 font-medium text-sm rounded-t-lg transition-all duration-200 ${
             activeTab === index
-              ? 'border-blue-500 text-blue-400'
-              : 'border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-500'
+              ? 'bg-blue-500/10 text-blue-400 border-b-2 border-blue-500'
+              : 'text-slate-500 hover:text-slate-300 hover:bg-slate-800/50 border-b-2 border-transparent'
           }`}
           onClick={() => setActiveTab(index)}
         >
