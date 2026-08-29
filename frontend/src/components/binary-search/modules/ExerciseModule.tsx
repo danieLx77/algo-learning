@@ -40,7 +40,7 @@ export const ExerciseModule: FC = () => {
   const handleRunTests = async () => {
     setLoading(true);
     setStatus('running');
-    setOutput('> Executando testes na nuvem...');
+    setOutput('> Executando testes em ambiente isolado...');
 
     try {
       const payload = {

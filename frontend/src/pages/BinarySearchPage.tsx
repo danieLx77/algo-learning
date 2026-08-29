@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { FC } from 'react';
 import {
   ArrowRight,
-  Binary,
   BookOpen,
   CheckCircle2,
   Code2,
@@ -10,6 +9,7 @@ import {
   Sparkles,
   Timer,
 } from 'lucide-react';
+import { SiteHeader } from '../components/layout/SiteHeader';
 import { Tabs } from '../components/binary-search/Tabs';
 import type { LearningTab } from '../components/binary-search/Tabs';
 import { TheoryModule } from '../components/binary-search/modules/TheoryModule';
@@ -41,33 +41,18 @@ export const BinarySearchPage: FC = () => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_12%,rgba(59,130,246,0.14),transparent_28%),radial-gradient(circle_at_85%_18%,rgba(139,92,246,0.12),transparent_25%)]" />
       <div className="page-grid pointer-events-none absolute inset-x-0 top-0 h-[760px] opacity-40" />
 
-      <header className="sticky top-0 z-50 border-b border-white/5 bg-slate-950/75 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-          <a href="#topo" className="group flex items-center gap-3" aria-label="AlgoLearning - início">
-            <span className="flex size-9 items-center justify-center rounded-xl border border-blue-400/20 bg-blue-500/10 text-blue-400 shadow-[0_0_24px_rgba(59,130,246,0.12)] transition-transform group-hover:-rotate-3">
-              <Binary size={19} strokeWidth={2.3} />
-            </span>
-            <span className="text-[15px] font-semibold tracking-tight text-white">
-              algo<span className="text-blue-400">learning</span>
-            </span>
-          </a>
-
-          <div className="flex items-center gap-3">
-            <span className="hidden items-center gap-2 rounded-full border border-white/8 bg-white/[0.03] px-3 py-1.5 text-xs font-medium text-slate-400 sm:flex">
-              <span className="size-1.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-              Trilha Java
-            </span>
-            <button
-              type="button"
-              onClick={() => openModule(2)}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
-            >
-              Ir para o desafio
-              <ArrowRight size={14} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <SiteHeader
+        action={(
+          <button
+            type="button"
+            onClick={() => openModule(2)}
+            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+          >
+            Ir para o desafio
+            <ArrowRight size={14} />
+          </button>
+        )}
+      />
 
       <main id="topo" className="relative z-10">
         <section className="mx-auto grid max-w-7xl items-center gap-14 px-5 pb-20 pt-16 sm:px-8 sm:pt-24 lg:grid-cols-[1.08fr_0.92fr] lg:gap-20 lg:pb-28">
