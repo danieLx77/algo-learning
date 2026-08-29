@@ -45,9 +45,10 @@ Você tem acesso às skills em `.agents/skills/`. Ative-as **automaticamente** d
 ## Estado Atual & Memória
 - **O que foi feito:** Frontend React integrado à API REST do backend via `axios`. Módulo Visualizador consome `GET /trace` com animação passo-a-passo. Módulo de Exercícios conecta `POST /verify` com Monaco Editor.
 - **Correção CI/CD (28/08/2026):** Adicionado `working-directory: ./backend` no workflow. Configurado Vitest + React Testing Library no frontend. Imports `React` corrigidos para `verbatimModuleSyntax`.
-- **Homepage moderna (28/08/2026):** Criado hero responsivo com preview do algoritmo, CTAs, métricas, header fixo e jornada em três etapas. TheoryModule, VisualizerModule e ExerciseModule receberam cards e hierarquia visual consistentes.
+- **Homepage e catálogo (28/08/2026):** `/` agora apresenta a plataforma e o catálogo escalável. Busca Binária foi movida para `/algoritmos/busca-binaria`; React Router e lazy loading evitam carregar Monaco na home.
 - **Acessibilidade e UX (28/08/2026):** Abas usam semântica ARIA e navegação por setas/Home/End. Visualizador valida o intervalo de `Integer`, usa parâmetros estruturados e exibe erros seguros. Layout validado em desktop e mobile sem overflow.
-- **Validação de código (28/08/2026):** Endpoint `/verify` agora compila e executa o código Java do usuário via `javax.tools.JavaCompiler`. DTO `ExerciseSubmissionRequest` recebe campo `code`. Frontend envia o código do Monaco Editor. Testes cobrem: código correto, incorreto, erro de compilação, target não encontrado. Arquivos compilados em diretório temporário com `URLClassLoader`.
-- **Testes atuais:** Frontend com 3 testes Vitest/RTL; lint e build verdes. Backend com 11 testes JUnit verdes.
-- **Próximos Passos:** Adicionar novos algoritmos, configurar autenticação e reforçar o isolamento da execução de código.
-- **Decisões de Arquitetura:** Interface dark responsiva com Tailwind CSS 4 e Lucide; nenhuma dependência nova. Backend mantém compilação temporária via `JavaCompiler` + `URLClassLoader`.
+- **Sandbox Java (28/08/2026):** `/verify` valida a AST, bloqueia APIs/imports/reflexão e executa somente `Solution.search` em JVM filha. Limites: 12 mil caracteres, 100 itens, 32 MB, 2 s e 2 execuções simultâneas.
+- **Segurança:** Annotation processing desativado, módulos limitados a `java.base`, ambiente limpo e processo destruído em timeout. DOMPurify fixado em 3.4.14; `npm audit` sem vulnerabilidades.
+- **Testes atuais:** Frontend com 4 testes Vitest/RTL; lint e build verdes. Backend com 21 testes JUnit, incluindo casos ofensivos de sistema, arquivos, rede, reflexão, loop e memória.
+- **Próximos Passos:** Adicionar novos algoritmos ao catálogo e, antes de publicar, configurar autenticação e rate limiting por identidade.
+- **Decisões de Arquitetura:** Interface dark responsiva com Tailwind CSS 4, Lucide e React Router. Execução de código nunca ocorre no processo Spring.
