@@ -3,20 +3,22 @@ package br.com.algolearning.modules.binarysearch.service;
 import br.com.algolearning.modules.binarysearch.dto.BinarySearchStep;
 import br.com.algolearning.modules.binarysearch.dto.ExerciseResult;
 import br.com.algolearning.modules.binarysearch.dto.ExerciseSubmissionRequest;
+import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@ExtendWith(MockitoExtension.class)
 class BinarySearchServiceTest {
 
-    @InjectMocks
     private BinarySearchService service;
+
+    @BeforeEach
+    void setUp() {
+        service = new BinarySearchService(new JavaExerciseSandbox());
+    }
 
     private static final String CORRECT_CODE = """
             class Solution {
@@ -157,5 +159,33 @@ class BinarySearchServiceTest {
         ExerciseSubmissionRequest request = new ExerciseSubmissionRequest(
                 List.of(1, 2, 3), 2, null);
         assertThrows(IllegalArgumentException.class, () -> service.verify(request));
+    }
+
+    @Test
+    void verify_shouldRejectCodeThatExceedsSizeLimit() {
+        String oversizedCode = "a".repeat(JavaExerciseSandbox.MAX_CODE_LENGTH + 1);
+        ExerciseSubmissionRequest request = new ExerciseSubmissionRequest(
+                List.of(1, 2, 3), 2, oversizedCode);
+
+        assertThrows(IllegalArgumentException.class, () -> service.verify(request));
+    }
+
+    @Test
+    void verify_shouldReturnSafeMessage_whenCodeViolatesPolicy() {
+        String maliciousCode = """
+                class Solution {
+                    public int search(int[] nums, int target) {
+                        System.exit(0);
+                        return -1;
+                    }
+                }
+                """;
+        ExerciseSubmissionRequest request = new ExerciseSubmissionRequest(
+                List.of(1, 2, 3), 2, maliciousCode);
+
+        ExerciseResult result = service.verify(request);
+
+        assertFalse(result.passed());
+        assertTrue(result.message().startsWith("Código não permitido"));
     }
 }

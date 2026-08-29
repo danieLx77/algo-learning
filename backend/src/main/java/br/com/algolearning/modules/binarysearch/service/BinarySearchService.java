@@ -1,15 +1,10 @@
 package br.com.algolearning.modules.binarysearch.service;
 
 import br.com.algolearning.modules.binarysearch.dto.*;
+import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox;
+import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox.SandboxException;
 import org.springframework.stereotype.Service;
 
-import javax.tools.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +12,13 @@ import java.util.List;
 public class BinarySearchService {
 
     private static final List<Integer> STATIC_ARRAY = List.of(2, 5, 8, 12, 16, 23, 38, 56, 72, 91);
+    private static final int MAX_EXERCISE_ARRAY_LENGTH = 100;
+
+    private final JavaExerciseSandbox exerciseSandbox;
+
+    public BinarySearchService(JavaExerciseSandbox exerciseSandbox) {
+        this.exerciseSandbox = java.util.Objects.requireNonNull(exerciseSandbox, "O sandbox não pode ser nulo");
+    }
 
     public BinarySearchResponse search(BinarySearchRequest request) {
         if (request == null || request.array() == null || request.target() == null) {
@@ -88,156 +90,48 @@ public class BinarySearchService {
         if (request == null || request.array() == null || request.target() == null || request.code() == null) {
             throw new IllegalArgumentException("Os parâmetros de submissão não podem ser nulos");
         }
+        if (request.array().isEmpty()
+                || request.array().size() > MAX_EXERCISE_ARRAY_LENGTH
+                || request.array().stream().anyMatch(java.util.Objects::isNull)) {
+            throw new IllegalArgumentException("O array deve conter entre 1 e 100 inteiros válidos");
+        }
+        if (request.code().isBlank() || request.code().length() > JavaExerciseSandbox.MAX_CODE_LENGTH) {
+            throw new IllegalArgumentException("O código deve conter entre 1 e 12.000 caracteres");
+        }
 
         long startTime = System.currentTimeMillis();
-
         List<Integer> array = request.array();
         int target = request.target();
-        String userCode = request.code();
-
         int expectedIndex = java.util.Collections.binarySearch(array, target);
 
         try {
-            int userResult = compileAndExecute(userCode, array, target);
+            int userResult = exerciseSandbox.execute(request.code(), array, target);
             long executionTimeMs = System.currentTimeMillis() - startTime;
-
-            boolean isCorrect = false;
-            if (expectedIndex >= 0 && userResult == expectedIndex) {
-                isCorrect = true;
-            } else if (expectedIndex < 0 && userResult == -1) {
-                isCorrect = true;
-            }
+            boolean isCorrect = expectedIndex >= 0
+                    ? userResult == expectedIndex
+                    : userResult == -1;
 
             if (isCorrect) {
                 return new ExerciseResult(true, executionTimeMs, "Parabéns! Sua submissão atende aos requisitos.");
-            } else {
-                String msg = String.format(
+            }
+
+            String message = String.format(
                     "Resultado incorreto. Esperado: %d, Obtido: %d",
-                    expectedIndex >= 0 ? expectedIndex : -1, userResult
-                );
-                return new ExerciseResult(false, executionTimeMs, msg);
-            }
-        } catch (CompilationException e) {
-            long executionTimeMs = System.currentTimeMillis() - startTime;
-            return new ExerciseResult(false, executionTimeMs, "Erro de compilação:\n" + e.getErrors());
-        } catch (Exception e) {
-            long executionTimeMs = System.currentTimeMillis() - startTime;
-            String msg = e.getMessage() != null ? e.getMessage() : e.getClass().getSimpleName();
-            return new ExerciseResult(false, executionTimeMs, "Erro de execução: " + msg);
-        }
-    }
-
-    private int compileAndExecute(String userCode, List<Integer> array, int target) throws Exception {
-        String className = extractClassName(userCode);
-        String fullClassName = "sandbox." + className;
-        String wrappedCode = wrapCode(userCode, fullClassName, className);
-
-        File tempDir = Files.createTempDirectory("sandbox-").toFile();
-        try {
-            compileCode(wrappedCode, tempDir);
-            return executeClass(fullClassName, tempDir, array, target);
-        } finally {
-            deleteRecursive(tempDir);
-        }
-    }
-
-    private void compileCode(String code, File outputDir) throws CompilationException {
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        if (compiler == null) {
-            throw new CompilationException("JavaCompiler não disponível. Verifique se o JDK está configurado.");
-        }
-
-        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
-        StandardJavaFileManager stdFm = compiler.getStandardFileManager(diagnostics, null, null);
-
-        JavaFileObject sourceFile = new SimpleJavaFileObject(
-                java.net.URI.create("string:///Solution.java"), JavaFileObject.Kind.SOURCE) {
-            @Override
-            public CharSequence getCharContent(boolean ignoreEncodingErrors) {
-                return code;
-            }
-        };
-
-        List<String> options = List.of("-d", outputDir.getAbsolutePath());
-        JavaCompiler.CompilationTask task = compiler.getTask(
-                null, stdFm, diagnostics, options, null, List.of(sourceFile));
-
-        boolean success = task.call();
-        if (!success) {
-            StringBuilder errors = new StringBuilder();
-            for (Diagnostic<? extends JavaFileObject> d : diagnostics.getDiagnostics()) {
-                errors.append(d.getMessage(null)).append("\n");
-            }
-            throw new CompilationException(errors.toString().trim());
-        }
-    }
-
-    private int executeClass(String fullClassName, File classDir, List<Integer> array, int target) throws Exception {
-        URLClassLoader classLoader = new URLClassLoader(
-                new URL[]{classDir.toURI().toURL()},
-                BinarySearchService.class.getClassLoader());
-
-        try {
-            Class<?> clazz = Class.forName(fullClassName, true, classLoader);
-            java.lang.reflect.Constructor<?> ctor = clazz.getDeclaredConstructor();
-            ctor.setAccessible(true);
-            Object instance = ctor.newInstance();
-
-            int[] intArray = array.stream().mapToInt(Integer::intValue).toArray();
-            java.lang.reflect.Method method = clazz.getMethod("search", int[].class, int.class);
-            method.setAccessible(true);
-            Object result = method.invoke(instance, intArray, target);
-
-            return (int) result;
-        } finally {
-            classLoader.close();
-        }
-    }
-
-    private String extractClassName(String code) {
-        if (code.contains("class Solution")) {
-            return "Solution";
-        }
-        int classIdx = code.indexOf("class ");
-        if (classIdx >= 0) {
-            String afterClass = code.substring(classIdx + 6).trim();
-            int spaceIdx = afterClass.indexOf(' ');
-            int braceIdx = afterClass.indexOf('{');
-            int endIdx = Math.min(
-                    spaceIdx >= 0 ? spaceIdx : afterClass.length(),
-                    braceIdx >= 0 ? braceIdx : afterClass.length()
+                    expectedIndex >= 0 ? expectedIndex : -1,
+                    userResult
             );
-            return afterClass.substring(0, endIdx).trim();
+            return new ExerciseResult(false, executionTimeMs, message);
+        } catch (SandboxException exception) {
+            long executionTimeMs = System.currentTimeMillis() - startTime;
+            String prefix = switch (exception.reason()) {
+                case POLICY -> "Código não permitido: ";
+                case COMPILATION -> "Erro de compilação:\n";
+                case TIMEOUT -> "Tempo limite excedido: ";
+                case RUNTIME -> "Erro de execução: ";
+                case BUSY -> "Executor ocupado: ";
+                case INTERNAL -> "Executor indisponível: ";
+            };
+            return new ExerciseResult(false, executionTimeMs, prefix + exception.getMessage());
         }
-        return "Solution";
-    }
-
-    private String wrapCode(String userCode, String fullClassName, String simpleClassName) {
-        String trimmed = userCode.trim();
-        if (trimmed.startsWith("class ")) {
-            return "package sandbox;\n\n" + trimmed;
-        }
-        return "package sandbox;\n\npublic class " + simpleClassName + " {\n" + trimmed + "\n}";
-    }
-
-    private void deleteRecursive(File file) {
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            if (children != null) {
-                for (File child : children) {
-                    deleteRecursive(child);
-                }
-            }
-        }
-        file.delete();
-    }
-
-    private static class CompilationException extends Exception {
-        private final String errors;
-        CompilationException(String errors) {
-            super("Erro de compilação");
-            this.errors = errors;
-        }
-        String getErrors() { return errors; }
     }
 }
