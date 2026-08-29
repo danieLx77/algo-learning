@@ -46,7 +46,7 @@ Você tem acesso às skills em `.agents/skills/`. Ative-as **automaticamente** d
 - **O que foi feito:** Frontend React integrado à API REST do backend via `axios`. Módulo Visualizador consome `GET /trace` com animação passo-a-passo. Módulo de Exercícios conecta `POST /verify` com Monaco Editor.
 - **Correção CI/CD (28/08/2026):** Adicionado `working-directory: ./backend` no workflow. Configurado Vitest + React Testing Library no frontend. Imports `React` corrigidos para `verbatimModuleSyntax`.
 - **Homepage e catálogo (28/08/2026):** `/` agora apresenta a plataforma e o catálogo escalável. Busca Binária foi movida para `/algoritmos/busca-binaria`; React Router e lazy loading evitam carregar Monaco na home.
-- **Redesign visual (29/08/2026):** Homepage e trilha adotam moldura escura, relevo violeta em CSS, navegação suspensa, cartões translúcidos e tipografia editorial. Módulos seguem o mesmo design system.
+- **Redesign visual (29/08/2026):** Homepage e trilha ocupam toda a viewport em preto, com relevo violeta em CSS, navegação suspensa, cartões translúcidos e tipografia editorial. Módulos seguem o mesmo design system.
 - **Acessibilidade e UX:** Abas usam semântica ARIA e navegação por setas/Home/End. Rotas retornam ao topo; layout validado em desktop e mobile sem overflow ou erros no console.
 - **Sandbox Java (28/08/2026):** `/verify` valida a AST, bloqueia APIs/imports/reflexão e executa somente `Solution.search` em JVM filha. Limites: 12 mil caracteres, 100 itens, 32 MB, 2 s e 2 execuções simultâneas.
 - **Segurança:** Annotation processing desativado, módulos limitados a `java.base`, ambiente limpo e processo destruído em timeout. DOMPurify fixado em 3.4.14; `npm audit` sem vulnerabilidades.
