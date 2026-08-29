@@ -96,12 +96,12 @@ export const VisualizerModule: FC = () => {
   const progress = steps.length > 0 ? ((currentStep + 1) / steps.length) * 100 : 0;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65 shadow-xl shadow-black/10">
+    <div className="violet-panel overflow-hidden rounded-[22px]">
       <div className="flex flex-col gap-5 border-b border-white/[0.06] px-5 py-5 sm:px-7 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-blue-400 shadow-[0_0_12px_rgba(96,165,250,0.8)]" />
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-blue-300">Laboratório interativo</p>
+            <span className="size-2 rounded-full bg-violet-300 shadow-[0_0_12px_rgba(196,181,253,0.8)]" />
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-300">Laboratório interativo</p>
           </div>
           <h2 className="mt-2 text-xl font-semibold text-white">Veja cada decisão do algoritmo</h2>
         </div>
@@ -114,7 +114,7 @@ export const VisualizerModule: FC = () => {
           }}
         >
           <label htmlFor="target-value" className="sr-only">Valor procurado</label>
-          <div className="flex min-w-0 flex-1 items-center rounded-xl border border-white/[0.08] bg-black/20 px-3 focus-within:border-blue-400/50 md:w-44">
+          <div className="flex min-w-0 flex-1 items-center rounded-xl border border-white/[0.08] bg-black/20 px-3 focus-within:border-violet-300/50 md:w-44">
             <span className="mr-2 font-mono text-[10px] uppercase tracking-wider text-slate-600">Alvo</span>
             <input
               id="target-value"
@@ -130,7 +130,7 @@ export const VisualizerModule: FC = () => {
             type="submit"
             aria-label="Buscar valor"
             disabled={loading}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-500 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
           >
             <Search size={16} />
             <span className="hidden sm:inline">Buscar</span>
@@ -146,7 +146,7 @@ export const VisualizerModule: FC = () => {
           </div>
         )}
 
-        <div className="rounded-2xl border border-white/[0.06] bg-[#090f1c] p-5 sm:p-7">
+        <div className="rounded-[22px] border border-white/[0.055] bg-[#09090d] p-5 sm:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="min-h-[48px]">
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">Decisão atual</p>
@@ -171,7 +171,7 @@ export const VisualizerModule: FC = () => {
 
           <div className="mt-5 h-1 overflow-hidden rounded-full bg-white/[0.05]">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-blue-500 to-violet-400 transition-[width] duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-violet-600 to-indigo-400 transition-[width] duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -183,7 +183,7 @@ export const VisualizerModule: FC = () => {
               if (index === mid) {
                 stateClasses = found
                   ? 'border-emerald-400 bg-emerald-500 text-white shadow-[0_0_24px_rgba(52,211,153,0.25)]'
-                  : 'border-blue-400 bg-blue-500 text-white shadow-[0_0_24px_rgba(59,130,246,0.3)]';
+                  : 'border-violet-300 bg-violet-600 text-white shadow-[0_0_24px_rgba(139,92,246,0.36)]';
               } else if (index === low) {
                 stateClasses = 'border-emerald-400/70 bg-emerald-500/15 text-emerald-200';
               } else if (index === high) {
@@ -207,8 +207,8 @@ export const VisualizerModule: FC = () => {
             <span className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-emerald-300/80">
               <span className="size-2 rounded-full bg-emerald-400" /> Low
             </span>
-            <span className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-blue-300/80">
-              <span className="size-2 rounded-full bg-blue-400" /> Mid
+            <span className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-violet-300/80">
+              <span className="size-2 rounded-full bg-violet-300" /> Mid
             </span>
             <span className="flex items-center gap-2 text-[10px] font-medium uppercase tracking-wider text-rose-300/80">
               <span className="size-2 rounded-full bg-rose-400" /> High
@@ -251,7 +251,7 @@ export const VisualizerModule: FC = () => {
               aria-label={isPlaying ? 'Pausar animação' : 'Reproduzir animação'}
               onClick={() => setIsPlaying(!isPlaying)}
               disabled={currentStep >= steps.length - 1 || steps.length === 0}
-              className="rounded-full bg-blue-500 p-3 text-white shadow-[0_8px_24px_rgba(37,99,235,0.3)] transition hover:bg-blue-400 disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400"
+              className="rounded-full bg-violet-600 p-3 text-white shadow-[0_8px_24px_rgba(109,40,217,0.32)] transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-300"
             >
               {isPlaying ? <Pause size={18} /> : <Play size={18} className="translate-x-px" />}
             </button>

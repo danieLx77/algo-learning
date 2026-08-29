@@ -1,5 +1,5 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { HomePage } from './pages/HomePage';
 
 const BinarySearchPage = lazy(async () => {
@@ -7,12 +7,24 @@ const BinarySearchPage = lazy(async () => {
   return { default: module.BinarySearchPage };
 });
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [pathname]);
+
+  return null;
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Suspense
         fallback={(
-          <div className="flex min-h-screen items-center justify-center bg-slate-950 text-sm text-slate-500">
+          <div className="flex min-h-screen items-center justify-center bg-[#08080b] text-sm text-zinc-500">
             Carregando experiência...
           </div>
         )}

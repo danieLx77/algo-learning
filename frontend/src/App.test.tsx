@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 
 describe('App', () => {
@@ -13,17 +13,21 @@ describe('App', () => {
     expect(screen.getByRole('main')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /algoritmos deixam de ser abstratos/i })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Busca Binária' })).toBeInTheDocument();
+    expect(screen.getByText('Trilha disponível')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /ver biblioteca/i })).toHaveAttribute('href', '#algoritmos');
     expect(screen.getAllByText('Em breve')).toHaveLength(3);
   });
 
   it('navigates from the homepage to the binary search trail', async () => {
     render(<App />);
+    document.documentElement.scrollTop = 320;
 
     fireEvent.click(screen.getByRole('link', { name: /começar agora/i }));
 
     expect(await screen.findByRole('heading', { name: /encontre a resposta/i })).toBeInTheDocument();
     expect(screen.getByRole('tablist', { name: /etapas de aprendizagem/i })).toBeInTheDocument();
     expect(window.location.pathname).toBe('/algoritmos/busca-binaria');
+    await waitFor(() => expect(document.documentElement.scrollTop).toBe(0));
   });
 
   it('opens the visualizer from the algorithm page call to action', async () => {

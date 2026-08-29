@@ -72,7 +72,7 @@ export const ExerciseModule: FC = () => {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-      <section className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65 shadow-xl shadow-black/10">
+      <section className="violet-panel overflow-hidden rounded-[22px]">
         <div className="border-b border-white/[0.06] p-6 sm:p-7">
           <div className="flex items-center justify-between gap-4">
             <span className="flex size-11 items-center justify-center rounded-xl border border-violet-400/15 bg-violet-400/[0.08] text-violet-300">
@@ -106,7 +106,7 @@ export const ExerciseModule: FC = () => {
 
           <div>
             <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-600">Exemplo</p>
-            <div className="mt-3 overflow-x-auto rounded-xl border border-white/[0.06] bg-[#090f1c] p-4 font-mono text-xs leading-6">
+            <div className="mt-3 overflow-x-auto rounded-xl border border-white/[0.06] bg-[#09090d] p-4 font-mono text-xs leading-6">
               <p><span className="text-slate-600">nums</span> <span className="text-slate-500">=</span> <span className="text-blue-300">[-1, 0, 3, 5, 9, 12]</span></p>
               <p><span className="text-slate-600">target</span> <span className="text-slate-500">=</span> <span className="text-amber-300">9</span></p>
               <p className="mt-2 border-t border-white/[0.05] pt-2"><span className="text-slate-600">output</span> <span className="text-slate-500">=</span> <span className="text-emerald-300">4</span></p>
@@ -121,7 +121,7 @@ export const ExerciseModule: FC = () => {
       </section>
 
       <section className="flex min-w-0 flex-col gap-4">
-        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-[#090f1c] shadow-xl shadow-black/10">
+        <div className="overflow-hidden rounded-[22px] border border-white/[0.07] bg-[#09090d] shadow-xl shadow-black/10">
           <div className="flex items-center justify-between gap-3 border-b border-white/[0.06] bg-white/[0.025] px-4 py-3 sm:px-5">
             <div className="flex min-w-0 items-center gap-3">
               <div className="flex gap-1.5">
@@ -164,7 +164,7 @@ export const ExerciseModule: FC = () => {
           </div>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65">
+        <div className="violet-panel overflow-hidden rounded-[22px]">
           <div className="flex items-center justify-between border-b border-white/[0.06] px-4 py-3 sm:px-5">
             <span className="flex items-center gap-2 text-xs font-medium text-slate-400">
               <Terminal size={14} /> Console

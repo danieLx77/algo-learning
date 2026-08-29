@@ -29,18 +29,18 @@ const SEARCH_STEPS = [
 export const TheoryModule: FC = () => {
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-      <article className="overflow-hidden rounded-2xl border border-white/[0.07] bg-slate-900/65 shadow-xl shadow-black/10">
+      <article className="violet-panel overflow-hidden rounded-[22px]">
         <div className="flex items-center gap-4 border-b border-white/[0.06] px-6 py-5 sm:px-8">
           <span className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-amber-400/15 bg-amber-400/[0.08] text-amber-300">
             <Lightbulb size={20} />
           </span>
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-amber-300/80">Fundamentos</p>
-            <p className="mt-1 text-sm text-slate-500">Construa o modelo mental antes de codificar.</p>
+            <p className="mt-1 text-sm text-zinc-500">Construa o modelo mental antes de codificar.</p>
           </div>
         </div>
 
-        <div className="prose prose-invert prose-slate max-w-none px-6 py-7 prose-headings:tracking-tight prose-headings:text-white prose-h2:mb-4 prose-h2:text-2xl prose-h3:mt-8 prose-h3:text-lg prose-p:leading-7 prose-p:text-slate-400 prose-strong:text-slate-200 prose-table:text-sm prose-th:border-white/10 prose-th:text-slate-300 prose-td:border-white/[0.06] prose-td:text-slate-400 sm:px-8 sm:py-9">
+        <div className="prose prose-invert prose-zinc max-w-none px-6 py-7 prose-headings:tracking-tight prose-headings:text-white prose-h2:mb-4 prose-h2:text-2xl prose-h3:mt-8 prose-h3:text-lg prose-p:leading-7 prose-p:text-zinc-400 prose-strong:text-zinc-200 prose-table:text-sm prose-th:border-white/10 prose-th:text-zinc-300 prose-td:border-white/[0.06] prose-td:text-zinc-400 sm:px-8 sm:py-9">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {markdownContent}
           </ReactMarkdown>
@@ -48,19 +48,19 @@ export const TheoryModule: FC = () => {
       </article>
 
       <aside className="flex flex-col gap-5">
-        <div className="rounded-2xl border border-blue-400/15 bg-gradient-to-b from-blue-500/[0.10] to-slate-900/60 p-6">
+        <div className="rounded-[22px] border border-violet-300/15 bg-gradient-to-b from-violet-500/[0.10] to-zinc-950/60 p-6">
           <div className="flex items-center justify-between">
-            <span className="flex size-10 items-center justify-center rounded-xl bg-blue-500/15 text-blue-300">
+            <span className="flex size-10 items-center justify-center rounded-xl bg-violet-500/15 text-violet-300">
               <Route size={19} />
             </span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-blue-300/60">3 movimentos</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-violet-300/60">3 movimentos</span>
           </div>
 
           <h3 className="mt-5 text-lg font-semibold text-white">O ciclo da busca</h3>
           <ol className="mt-5 space-y-4">
             {SEARCH_STEPS.map((step, index) => (
               <li key={step} className="flex gap-3">
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-blue-400/20 bg-blue-500/10 font-mono text-[10px] text-blue-300">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full border border-violet-300/20 bg-violet-500/10 font-mono text-[10px] text-violet-300">
                   {index + 1}
                 </span>
                 <p className="text-sm leading-6 text-slate-400">{step}</p>
