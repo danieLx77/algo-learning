@@ -49,6 +49,7 @@ Você tem acesso às skills em `.agents/skills/`. Ative-as **automaticamente** d
 - **Acessibilidade e UX (28/08/2026):** Abas usam semântica ARIA e navegação por setas/Home/End. Visualizador valida o intervalo de `Integer`, usa parâmetros estruturados e exibe erros seguros. Layout validado em desktop e mobile sem overflow.
 - **Sandbox Java (28/08/2026):** `/verify` valida a AST, bloqueia APIs/imports/reflexão e executa somente `Solution.search` em JVM filha. Limites: 12 mil caracteres, 100 itens, 32 MB, 2 s e 2 execuções simultâneas.
 - **Segurança:** Annotation processing desativado, módulos limitados a `java.base`, ambiente limpo e processo destruído em timeout. DOMPurify fixado em 3.4.14; `npm audit` sem vulnerabilidades.
+- **Documentação local (29/08/2026):** `.session-logs/` foi removida do versionamento e ignorada integralmente; os registros de sessão permanecem somente no ambiente local.
 - **Testes atuais:** Frontend com 4 testes Vitest/RTL; lint e build verdes. Backend com 21 testes JUnit, incluindo casos ofensivos de sistema, arquivos, rede, reflexão, loop e memória.
 - **Próximos Passos:** Adicionar novos algoritmos ao catálogo e, antes de publicar, configurar autenticação e rate limiting por identidade.
-- **Decisões de Arquitetura:** Interface dark responsiva com Tailwind CSS 4, Lucide e React Router. Execução de código nunca ocorre no processo Spring.
+- **Decisões de Arquitetura:** Interface dark responsiva com Tailwind CSS 4, Lucide e React Router. Execução de código nunca ocorre no processo Spring. Logs de sessão não integram o repositório remoto.
