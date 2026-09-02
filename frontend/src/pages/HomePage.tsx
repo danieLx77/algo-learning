@@ -9,6 +9,7 @@ import {
   Code2,
   GitBranch,
   Layers3,
+  ListOrdered,
   PlayCircle,
   Sparkles,
 } from 'lucide-react';
@@ -113,6 +114,14 @@ export const HomePage: FC = () => {
                 </Link>
 
                 <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+                  <Link to="/algoritmos/arrays" className="group rounded-2xl border border-violet-300/15 bg-violet-400/[0.055] p-5 transition hover:-translate-y-0.5 hover:border-violet-300/25">
+                    <div className="flex items-center gap-4">
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-violet-300/15 bg-violet-400/10 text-violet-300"><ListOrdered size={18} /></span>
+                      <div className="min-w-0"><p className="text-[9px] font-semibold uppercase tracking-[0.15em] text-violet-300/60">Fundamentos</p><h3 className="mt-1 text-sm font-medium text-white">Arrays</h3></div>
+                      <span className="ml-auto text-[8px] uppercase tracking-wider text-violet-300">Disponível</span>
+                    </div>
+                    <p className="mt-4 text-xs leading-5 text-zinc-500">Entenda índices, percursos e deslocamentos visualmente.</p>
+                  </Link>
                   {UPCOMING_ALGORITHMS.map((algorithm) => (
                     <article key={algorithm.title} className="group rounded-2xl border border-white/[0.055] bg-white/[0.018] p-5 transition hover:border-violet-300/10 hover:bg-violet-300/[0.025]">
                       <div className="flex items-center gap-4">

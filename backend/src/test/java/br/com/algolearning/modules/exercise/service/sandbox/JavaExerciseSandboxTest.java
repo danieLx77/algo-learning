@@ -1,7 +1,7 @@
-package br.com.algolearning.modules.binarysearch.service.sandbox;
+package br.com.algolearning.modules.exercise.service.sandbox;
 
-import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox.Reason;
-import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox.SandboxException;
+import br.com.algolearning.modules.exercise.service.sandbox.JavaExerciseSandbox.Reason;
+import br.com.algolearning.modules.exercise.service.sandbox.JavaExerciseSandbox.SandboxException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JavaExerciseSandboxTest {
 
@@ -104,6 +105,40 @@ class JavaExerciseSandboxTest {
                 SandboxException.class,
                 () -> sandbox.execute(code, VALUES, 9)
         );
+
+        assertEquals(Reason.POLICY, exception.reason());
+    }
+
+    @Test
+    void verifyReverse_shouldValidateMultipleCases() throws SandboxException {
+        String code = """
+                class Solution {
+                    public int[] reverse(int[] nums) {
+                        int left = 0;
+                        int right = nums.length - 1;
+                        while (left < right) {
+                            int temporary = nums[left];
+                            nums[left] = nums[right];
+                            nums[right] = temporary;
+                            left++;
+                            right--;
+                        }
+                        return nums;
+                    }
+                }
+                """;
+
+        boolean passed = sandbox.verifyReverse(code, List.of(VALUES, List.of(7), List.of(-4, 8)));
+
+        assertTrue(passed);
+    }
+
+    @Test
+    void verifyReverse_shouldRejectWrongMethodSignature() {
+        SandboxException exception = assertThrows(SandboxException.class, () -> sandbox.verifyReverse(
+                solution("return -1;"),
+                List.of(VALUES)
+        ));
 
         assertEquals(Reason.POLICY, exception.reason());
     }

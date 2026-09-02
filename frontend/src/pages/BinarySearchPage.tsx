@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import { AlgorithmLandscape } from '../components/layout/AlgorithmLandscape';
 import { SiteHeader } from '../components/layout/SiteHeader';
-import { Tabs } from '../components/binary-search/Tabs';
-import type { LearningTab } from '../components/binary-search/Tabs';
+import { Tabs } from '../components/learning/Tabs';
+import type { LearningTab } from '../components/learning/Tabs';
 import { TheoryModule } from '../components/binary-search/modules/TheoryModule';
 import { VisualizerModule } from '../components/binary-search/modules/VisualizerModule';
 import { ExerciseModule } from '../components/binary-search/modules/ExerciseModule';

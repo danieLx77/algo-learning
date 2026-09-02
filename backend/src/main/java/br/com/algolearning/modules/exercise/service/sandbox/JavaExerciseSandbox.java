@@ -1,4 +1,4 @@
-package br.com.algolearning.modules.binarysearch.service.sandbox;
+package br.com.algolearning.modules.exercise.service.sandbox;
 
 import com.sun.source.tree.AnnotationTree;
 import com.sun.source.tree.ClassTree;
@@ -60,19 +60,48 @@ public final class JavaExerciseSandbox {
 
     public int execute(String userCode, List<Integer> array, int target) throws SandboxException {
         validateInput(userCode, array);
+        String output = executeIsolated(userCode, ExerciseContract.SEARCH, createSearchRunnerSource(array, target));
+
+        try {
+            return Integer.parseInt(output);
+        } catch (NumberFormatException exception) {
+            throw SandboxException.runtime("A solução retornou um resultado inválido.");
+        }
+    }
+
+    public boolean verifyReverse(String userCode, List<List<Integer>> testCases) throws SandboxException {
+        validateReverseInput(userCode, testCases);
+        String output = executeIsolated(userCode, ExerciseContract.REVERSE, createReverseRunnerSource(testCases));
+        if (!output.equals("true") && !output.equals("false")) {
+            throw SandboxException.runtime("A solução retornou um resultado inválido.");
+        }
+        return Boolean.parseBoolean(output);
+    }
+
+    private String executeIsolated(String userCode, ExerciseContract contract, String runnerSource)
+            throws SandboxException {
         acquireExecutionSlot();
 
         try {
-            validateSourcePolicy(userCode);
+            validateSourcePolicy(userCode, contract);
             Path sandboxDirectory = createSandboxDirectory();
             try {
-                compile(userCode, createRunnerSource(array, target), sandboxDirectory);
+                compile(userCode, runnerSource, sandboxDirectory);
                 return executeInChildJvm(sandboxDirectory);
             } finally {
                 deleteSandboxDirectory(sandboxDirectory);
             }
         } finally {
             executionSlots.release();
+        }
+    }
+
+    private void validateReverseInput(String userCode, List<List<Integer>> testCases) throws SandboxException {
+        if (testCases == null || testCases.isEmpty() || testCases.size() > 10) {
+            throw SandboxException.policy("Informe entre 1 e 10 casos de teste.");
+        }
+        for (List<Integer> testCase : testCases) {
+            validateInput(userCode, testCase);
         }
     }
 
@@ -99,7 +128,7 @@ public final class JavaExerciseSandbox {
         }
     }
 
-    private void validateSourcePolicy(String userCode) throws SandboxException {
+    private void validateSourcePolicy(String userCode, ExerciseContract contract) throws SandboxException {
         JavaCompiler compiler = requireCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
 
@@ -123,7 +152,7 @@ public final class JavaExerciseSandbox {
                 throw SandboxException.policy("A submissão deve conter somente a classe Solution.");
             }
 
-            validateCompilationUnit(units.get(0));
+            validateCompilationUnit(units.get(0), contract);
         } catch (IOException exception) {
             throw SandboxException.internal("Não foi possível analisar a submissão.", exception);
         } catch (PolicyViolation exception) {
@@ -131,7 +160,7 @@ public final class JavaExerciseSandbox {
         }
     }
 
-    private void validateCompilationUnit(CompilationUnitTree unit) {
+    private void validateCompilationUnit(CompilationUnitTree unit, ExerciseContract contract) {
         if (unit.getPackageName() != null || !unit.getImports().isEmpty()) {
             throw new PolicyViolation("Packages e imports não são permitidos no exercício.");
         }
@@ -147,36 +176,45 @@ public final class JavaExerciseSandbox {
                 || !solutionClass.getModifiers().getAnnotations().isEmpty()) {
             throw new PolicyViolation("A classe deve ser uma Solution simples, sem herança ou anotações.");
         }
-        if (solutionClass.getMembers().size() != 1 || !(solutionClass.getMembers().get(0) instanceof MethodTree searchMethod)) {
-            throw new PolicyViolation("Solution deve conter somente o método search.");
+        if (solutionClass.getMembers().size() != 1 || !(solutionClass.getMembers().get(0) instanceof MethodTree exerciseMethod)) {
+            throw new PolicyViolation("Solution deve conter somente o método solicitado.");
         }
 
-        validateSearchMethod(searchMethod);
-        new RestrictedCodeScanner(solutionClass).scan(searchMethod.getBody(), null);
+        validateExerciseMethod(exerciseMethod, contract);
+        new RestrictedCodeScanner(solutionClass).scan(exerciseMethod.getBody(), null);
     }
 
     private boolean hasAllowedClassModifiers(Set<Modifier> modifiers) {
         return modifiers.stream().allMatch(modifier -> modifier == Modifier.PUBLIC || modifier == Modifier.FINAL);
     }
 
-    private void validateSearchMethod(MethodTree method) {
+    private void validateExerciseMethod(MethodTree method, ExerciseContract contract) {
         Set<Modifier> modifiers = method.getModifiers().getFlags();
-        boolean validSignature = method.getName().contentEquals("search")
-                && method.getReturnType() != null
-                && method.getReturnType().toString().equals("int")
-                && method.getParameters().size() == 2
-                && method.getParameters().get(0).getType().toString().equals("int[]")
-                && method.getParameters().get(1).getType().toString().equals("int")
-                && modifiers.equals(Set.of(Modifier.PUBLIC))
+        boolean commonSignature = modifiers.equals(Set.of(Modifier.PUBLIC))
                 && method.getBody() != null
                 && method.getTypeParameters().isEmpty()
                 && method.getThrows().isEmpty()
                 && method.getDefaultValue() == null
                 && method.getReceiverParameter() == null
                 && method.getModifiers().getAnnotations().isEmpty();
+        boolean validSearchSignature = contract == ExerciseContract.SEARCH
+                && method.getName().contentEquals("search")
+                && method.getReturnType() != null
+                && method.getReturnType().toString().equals("int")
+                && method.getParameters().size() == 2
+                && method.getParameters().get(0).getType().toString().equals("int[]")
+                && method.getParameters().get(1).getType().toString().equals("int")
+                && commonSignature;
+        boolean validReverseSignature = contract == ExerciseContract.REVERSE
+                && method.getName().contentEquals("reverse")
+                && method.getReturnType() != null
+                && method.getReturnType().toString().equals("int[]")
+                && method.getParameters().size() == 1
+                && method.getParameters().get(0).getType().toString().equals("int[]")
+                && commonSignature;
 
-        if (!validSignature) {
-            throw new PolicyViolation("Use exatamente a assinatura public int search(int[] nums, int target).");
+        if (!validSearchSignature && !validReverseSignature) {
+            throw new PolicyViolation("Use exatamente a assinatura " + contract.signature() + ".");
         }
     }
 
@@ -205,7 +243,7 @@ public final class JavaExerciseSandbox {
         }
     }
 
-    private int executeInChildJvm(Path sandboxDirectory) throws SandboxException {
+    private String executeInChildJvm(Path sandboxDirectory) throws SandboxException {
         Process process = null;
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(
@@ -241,11 +279,7 @@ public final class JavaExerciseSandbox {
                 throw SandboxException.runtime("A solução não retornou um resultado válido.");
             }
 
-            try {
-                return Integer.parseInt(output.substring(RESULT_PREFIX.length()).trim());
-            } catch (NumberFormatException exception) {
-                throw SandboxException.runtime("A solução retornou um resultado inválido.");
-            }
+            return output.substring(RESULT_PREFIX.length()).trim();
         } catch (IOException exception) {
             throw SandboxException.internal("Não foi possível iniciar o executor isolado.", exception);
         } catch (InterruptedException exception) {
@@ -279,7 +313,7 @@ public final class JavaExerciseSandbox {
         }
     }
 
-    private String createRunnerSource(List<Integer> array, int target) {
+    private String createSearchRunnerSource(List<Integer> array, int target) {
         String values = array.stream().map(String::valueOf).collect(Collectors.joining(", "));
         return """
                 public final class SandboxRunner {
@@ -292,6 +326,54 @@ public final class JavaExerciseSandbox {
                     }
                 }
                 """.formatted(values, target);
+    }
+
+    private String createReverseRunnerSource(List<List<Integer>> testCases) {
+        String inputs = testCases.stream()
+                .map(this::toIntArraySource)
+                .collect(Collectors.joining(", "));
+        String expected = testCases.stream()
+                .map(values -> {
+                    List<Integer> reversed = new ArrayList<>(values);
+                    java.util.Collections.reverse(reversed);
+                    return toIntArraySource(reversed);
+                })
+                .collect(Collectors.joining(", "));
+
+        return """
+                public final class SandboxRunner {
+                    private SandboxRunner() {}
+
+                    public static void main(String[] args) {
+                        int[][] inputs = new int[][] {%s};
+                        int[][] expected = new int[][] {%s};
+                        Solution solution = new Solution();
+                        boolean passed = true;
+                        for (int index = 0; index < inputs.length; index++) {
+                            int[] result = solution.reverse(inputs[index]);
+                            if (!equals(result, expected[index])) {
+                                passed = false;
+                                break;
+                            }
+                        }
+                        System.out.print("RESULT:" + passed);
+                    }
+
+                    private static boolean equals(int[] left, int[] right) {
+                        if (left == null || left.length != right.length) return false;
+                        for (int index = 0; index < left.length; index++) {
+                            if (left[index] != right[index]) return false;
+                        }
+                        return true;
+                    }
+                }
+                """.formatted(inputs, expected);
+    }
+
+    private String toIntArraySource(List<Integer> values) {
+        return "new int[] {%s}".formatted(values.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(", ")));
     }
 
     private Path javaExecutable() {
@@ -411,6 +493,21 @@ public final class JavaExerciseSandbox {
     private static final class PolicyViolation extends RuntimeException {
         private PolicyViolation(String message) {
             super(message);
+        }
+    }
+
+    private enum ExerciseContract {
+        SEARCH("public int search(int[] nums, int target)"),
+        REVERSE("public int[] reverse(int[] nums)");
+
+        private final String signature;
+
+        ExerciseContract(String signature) {
+            this.signature = signature;
+        }
+
+        private String signature() {
+            return signature;
         }
     }
 

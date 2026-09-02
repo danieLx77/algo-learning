@@ -43,14 +43,16 @@ Você tem acesso às skills em `.agents/skills/`. Ative-as **automaticamente** d
 ---
 
 ## Estado Atual & Memória
-- **O que foi feito:** Frontend React integrado à API REST do backend via `axios`. Módulo Visualizador consome `GET /trace` com animação passo-a-passo. Módulo de Exercícios conecta `POST /verify` com Monaco Editor.
+- **O que foi feito:** Frontend React integrado à API REST via `axios`; trilhas seguem o fluxo Entenda, Visualize e Pratique com Monaco Editor.
 - **Correção CI/CD (28/08/2026):** Adicionado `working-directory: ./backend` no workflow. Configurado Vitest + React Testing Library no frontend. Imports `React` corrigidos para `verbatimModuleSyntax`.
 - **Homepage e catálogo (28/08/2026):** `/` agora apresenta a plataforma e o catálogo escalável. Busca Binária foi movida para `/algoritmos/busca-binaria`; React Router e lazy loading evitam carregar Monaco na home.
 - **Redesign visual (29/08/2026):** Homepage e trilha ocupam toda a viewport em preto, com relevo violeta em CSS, navegação suspensa, cartões translúcidos e tipografia editorial. Módulos seguem o mesmo design system.
+- **Trilha Arrays (02/09/2026):** `/algoritmos/arrays` ensina índices e complexidades, visualiza acesso/atualização/inserção/remoção/percurso e propõe inversão de array em Java.
 - **Acessibilidade e UX:** Abas usam semântica ARIA e navegação por setas/Home/End. Rotas retornam ao topo; layout validado em desktop e mobile sem overflow ou erros no console.
-- **Sandbox Java (28/08/2026):** `/verify` valida a AST, bloqueia APIs/imports/reflexão e executa somente `Solution.search` em JVM filha. Limites: 12 mil caracteres, 100 itens, 32 MB, 2 s e 2 execuções simultâneas.
+- **Sandbox Java:** Executor compartilhado valida contratos `Solution.search` e `Solution.reverse`, bloqueia APIs/imports/reflexão e executa apenas em JVM filha.
 - **Segurança:** Annotation processing desativado, módulos limitados a `java.base`, ambiente limpo e processo destruído em timeout. DOMPurify fixado em 3.4.14; `npm audit` sem vulnerabilidades.
+- **Contratos da API:** Arrays expõe `POST /api/v1/algorithms/arrays/trace` e `/verify`; erros semânticos retornam Problem Details com HTTP 400.
 - **Documentação local (29/08/2026):** `.session-logs/` foi removida do versionamento e ignorada integralmente; os registros de sessão permanecem somente no ambiente local.
-- **Testes atuais:** Frontend com 4 testes Vitest/RTL; lint e build verdes. Backend com 21 testes JUnit, incluindo casos ofensivos de sistema, arquivos, rede, reflexão, loop e memória.
+- **Testes atuais:** Frontend com 6 testes Vitest/RTL, lint e build verdes. Backend com 32 testes JUnit, incluindo operações de Arrays e casos ofensivos do sandbox.
 - **Próximos Passos:** Adicionar novos algoritmos ao catálogo e, antes de publicar, configurar autenticação e rate limiting por identidade.
-- **Decisões de Arquitetura:** Visual abstrato é gerado com CSS responsivo, sem imagem externa. Tailwind CSS 4, Lucide e React Router; execução de código nunca ocorre no processo Spring.
+- **Decisões de Arquitetura:** Abas e sandbox são compartilhados entre trilhas; DTOs são imutáveis e a execução de código nunca ocorre no processo Spring.

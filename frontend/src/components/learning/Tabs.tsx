@@ -19,20 +19,11 @@ export const Tabs: FC<TabsProps> = ({ activeTab, setActiveTab, tabs }) => {
     let nextIndex: number;
 
     switch (event.key) {
-      case 'ArrowRight':
-        nextIndex = (index + 1) % tabs.length;
-        break;
-      case 'ArrowLeft':
-        nextIndex = (index - 1 + tabs.length) % tabs.length;
-        break;
-      case 'Home':
-        nextIndex = 0;
-        break;
-      case 'End':
-        nextIndex = tabs.length - 1;
-        break;
-      default:
-        return;
+      case 'ArrowRight': nextIndex = (index + 1) % tabs.length; break;
+      case 'ArrowLeft': nextIndex = (index - 1 + tabs.length) % tabs.length; break;
+      case 'Home': nextIndex = 0; break;
+      case 'End': nextIndex = tabs.length - 1; break;
+      default: return;
     }
 
     event.preventDefault();
@@ -63,13 +54,11 @@ export const Tabs: FC<TabsProps> = ({ activeTab, setActiveTab, tabs }) => {
           onClick={() => setActiveTab(index)}
           onKeyDown={(event) => handleKeyDown(event, index)}
         >
-          <span
-            className={`flex size-10 shrink-0 items-center justify-center rounded-xl border transition-colors ${
-              activeTab === index
-                ? 'border-violet-300/15 bg-violet-400/10 text-violet-300'
-                : 'border-white/[0.06] bg-white/[0.03] text-slate-500 group-hover:text-slate-300'
-            }`}
-          >
+          <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl border transition-colors ${
+            activeTab === index
+              ? 'border-violet-300/15 bg-violet-400/10 text-violet-300'
+              : 'border-white/[0.06] bg-white/[0.03] text-slate-500 group-hover:text-slate-300'
+          }`}>
             <tab.icon size={18} />
           </span>
           <span className="min-w-0">

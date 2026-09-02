@@ -1,8 +1,8 @@
 package br.com.algolearning.modules.binarysearch.service;
 
 import br.com.algolearning.modules.binarysearch.dto.*;
-import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox;
-import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox.SandboxException;
+import br.com.algolearning.modules.exercise.service.sandbox.JavaExerciseSandbox;
+import br.com.algolearning.modules.exercise.service.sandbox.JavaExerciseSandbox.SandboxException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

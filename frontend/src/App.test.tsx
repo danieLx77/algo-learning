@@ -1,9 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import axios from 'axios';
 import App from './App';
 
 describe('App', () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     window.history.pushState({}, '', '/');
   });
 
@@ -50,5 +52,32 @@ describe('App', () => {
 
     expect(screen.getByRole('tab', { name: /visualize/i })).toHaveFocus();
     expect(screen.getByRole('tab', { name: /visualize/i })).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('navigates to the arrays learning trail', async () => {
+    render(<App />);
+
+    fireEvent.click(screen.getByRole('link', { name: /arrays/i }));
+
+    expect(await screen.findByRole('heading', { name: /cada posição guarda/i })).toBeInTheDocument();
+    expect(window.location.pathname).toBe('/algoritmos/arrays');
+    expect(screen.getByRole('tablist', { name: /etapas de aprendizagem/i })).toBeInTheDocument();
+  });
+
+  it('runs an array operation in the visualizer', async () => {
+    vi.spyOn(axios, 'post').mockResolvedValueOnce({
+      data: [{ values: [4, 8, 15, 16, 23, 42], activeIndex: 2, shiftedIndices: [], description: 'Acesso direto ao índice 2: valor 15.', completed: true }],
+    });
+    window.history.pushState({}, '', '/algoritmos/arrays');
+    render(<App />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /explorar operações/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'Executar' }));
+
+    expect(await screen.findByText(/acesso direto ao índice 2/i)).toBeInTheDocument();
+    expect(axios.post).toHaveBeenCalledWith(
+      'http://localhost:8080/api/v1/algorithms/arrays/trace',
+      expect.objectContaining({ operation: 'ACCESS', index: 2 }),
+    );
   });
 });

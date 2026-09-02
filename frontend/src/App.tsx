@@ -7,6 +7,11 @@ const BinarySearchPage = lazy(async () => {
   return { default: module.BinarySearchPage };
 });
 
+const ArraysPage = lazy(async () => {
+  const module = await import('./pages/ArraysPage');
+  return { default: module.ArraysPage };
+});
+
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -32,6 +37,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/algoritmos/busca-binaria" element={<BinarySearchPage />} />
+          <Route path="/algoritmos/arrays" element={<ArraysPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

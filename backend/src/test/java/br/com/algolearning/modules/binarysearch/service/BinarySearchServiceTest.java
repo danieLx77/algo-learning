@@ -3,7 +3,7 @@ package br.com.algolearning.modules.binarysearch.service;
 import br.com.algolearning.modules.binarysearch.dto.BinarySearchStep;
 import br.com.algolearning.modules.binarysearch.dto.ExerciseResult;
 import br.com.algolearning.modules.binarysearch.dto.ExerciseSubmissionRequest;
-import br.com.algolearning.modules.binarysearch.service.sandbox.JavaExerciseSandbox;
+import br.com.algolearning.modules.exercise.service.sandbox.JavaExerciseSandbox;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
